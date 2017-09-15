@@ -9,6 +9,9 @@ import android.view.ViewGroup;
  */
 
 public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.IngredientHolder> {
+
+
+
     @Override
     public IngredientHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return null;

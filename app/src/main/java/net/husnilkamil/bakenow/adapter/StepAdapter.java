@@ -30,7 +30,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepHolder> {
         }
     }
 
-    public interface OnClickListener {
-        void onClick();
+    public interface OnStepClickListener {
+        void onStepClick();
     }
 }

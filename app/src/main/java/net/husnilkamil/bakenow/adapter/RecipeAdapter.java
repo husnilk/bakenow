@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import net.husnilkamil.bakenow.R;
-import net.husnilkamil.bakenow.model.Recipe;
+import net.husnilkamil.bakenow.entities.Recipe;
 
 import java.util.List;
 
@@ -25,6 +25,11 @@ import butterknife.ButterKnife;
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeHolder> {
 
     private List<Recipe> recipes;
+    private OnRecipeClickListener mRecipeClickListener;
+
+    public void setOnClickListener(OnRecipeClickListener mRecipeClickListener) {
+        this.mRecipeClickListener = mRecipeClickListener;
+    }
 
     @Override
     public RecipeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -55,19 +60,22 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeHold
         notifyDataSetChanged();
     }
 
-    public class RecipeHolder extends RecyclerView.ViewHolder{
+    public class RecipeHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         @BindView(R.id.img_recipe_image)
         ImageView mRecipeImage;
         @BindView(R.id.text_recipe_title)
         TextView mTextRecipeTitle;
 
+        View view;
         Context context;
 
         public RecipeHolder(View itemView) {
             super(itemView);
             context = itemView.getContext();
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
+            view = itemView;
         }
 
         public void bind(Recipe recipe){
@@ -78,11 +86,17 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeHold
                 String imageUrl = recipe.getImage();
                 Picasso.with(context).load(imageUrl).into(mRecipeImage);
             }
+            view.setTag(recipe.getId());
         }
 
+        @Override
+        public void onClick(View view) {
+            long recipeId = (long) view.getTag();
+            mRecipeClickListener.onRecipeClick(recipeId);
+        }
     }
 
     public interface OnRecipeClickListener {
-        void onRecipeClick(int recipeId);
+        void onRecipeClick(long recipeId);
     }
 }

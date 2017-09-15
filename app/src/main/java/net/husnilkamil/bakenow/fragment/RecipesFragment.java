@@ -1,7 +1,5 @@
 package net.husnilkamil.bakenow.fragment;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,7 +10,7 @@ import android.view.ViewGroup;
 
 import net.husnilkamil.bakenow.R;
 import net.husnilkamil.bakenow.adapter.RecipeAdapter;
-import net.husnilkamil.bakenow.model.Recipe;
+import net.husnilkamil.bakenow.entities.Recipe;
 
 import java.util.List;
 
@@ -44,11 +42,11 @@ public class RecipesFragment extends Fragment {
         return view;
     }
 
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
-    }
-
     public void setRecipeData(List<Recipe> data){
         mRecipeAdapter.setRecipes(data);
+    }
+
+    public void setAdapterClickListener(RecipeAdapter.OnRecipeClickListener onRecipeClickListener){
+        mRecipeAdapter.setOnClickListener(onRecipeClickListener);
     }
 }

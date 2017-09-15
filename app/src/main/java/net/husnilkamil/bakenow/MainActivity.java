@@ -1,19 +1,19 @@
 package net.husnilkamil.bakenow;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
 import net.husnilkamil.bakenow.adapter.RecipeAdapter;
-import net.husnilkamil.bakenow.entities.IngredientEntity;
-import net.husnilkamil.bakenow.entities.RecipeEntity;
-import net.husnilkamil.bakenow.entities.StepEntity;
+import net.husnilkamil.bakenow.entities.Ingredient;
+import net.husnilkamil.bakenow.entities.Recipe;
+import net.husnilkamil.bakenow.entities.Step;
 import net.husnilkamil.bakenow.fragment.RecipesFragment;
-import net.husnilkamil.bakenow.model.Ingredient;
-import net.husnilkamil.bakenow.model.Step;
 import net.husnilkamil.bakenow.retrofit.RecipeInterface;
-import net.husnilkamil.bakenow.model.Recipe;
 import net.husnilkamil.bakenow.utils.RecipeApiUtils;
 
 import java.util.List;
@@ -35,25 +35,40 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnR
 
         recipeInterface = RecipeApiUtils.getRecipes();
 
-        loadRecipes();
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        if(isConnected){
+            getRecipesFromServer();
+        } else {
+            loadRecipesFromDb();
+        }
 
         recipesFragment = new RecipesFragment();
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.recipe_fragment_container, recipesFragment)
                 .commit();
+
     }
 
-    private void loadRecipes() {
+    private void loadRecipesFromDb() {
+        List<Recipe> data = Recipe.listAll(Recipe.class);
+        recipesFragment.setRecipeData(data);
+        recipesFragment.setAdapterClickListener(this);
+    }
 
-        recipeInterface.getRecipes().enqueue(new Callback<List<Recipe>>() {
+    private void getRecipesFromServer() {
+
+        recipeInterface.getRecipes().enqueue(new Callback<List<net.husnilkamil.bakenow.retrofit.model.Recipe>>() {
 
             @Override
-            public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
+            public void onResponse(Call<List<net.husnilkamil.bakenow.retrofit.model.Recipe>> call, Response<List<net.husnilkamil.bakenow.retrofit.model.Recipe>> response) {
                 if(response.isSuccessful()){
-                    List<Recipe> data = response.body();
+                    List<net.husnilkamil.bakenow.retrofit.model.Recipe> data = response.body();
                     Log.d(TAG, "Total data " + data.size());
-                    recipesFragment.setRecipeData(data);
                     saveToDb(data);
+                    loadRecipesFromDb();
                 }else{
                     int statusCode = response.code();
                     Log.d(TAG, "Cannot Retrieve data. Error code " + statusCode);
@@ -61,21 +76,21 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnR
             }
 
             @Override
-            public void onFailure(Call<List<Recipe>> call, Throwable t) {
+            public void onFailure(Call<List<net.husnilkamil.bakenow.retrofit.model.Recipe>> call, Throwable t) {
                 Log.d(TAG, t.getMessage());
             }
 
         });
     }
 
-    private void saveToDb(List<Recipe> data){
+    private void saveToDb(List<net.husnilkamil.bakenow.retrofit.model.Recipe> data){
 
-        StepEntity.deleteAll(StepEntity.class);
-        IngredientEntity.deleteAll(IngredientEntity.class);
-        RecipeEntity.deleteAll(RecipeEntity.class);
+        Step.deleteAll(Step.class);
+        Ingredient.deleteAll(Ingredient.class);
+        Recipe.deleteAll(Recipe.class);
 
-        for (Recipe recipe : data) {
-            RecipeEntity recipeEntity = new RecipeEntity(
+        for (net.husnilkamil.bakenow.retrofit.model.Recipe recipe : data) {
+            Recipe recipeEntity = new Recipe(
                     recipe.getId(),
                     recipe.getName(),
                     recipe.getServings(),
@@ -84,8 +99,8 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnR
 
             Long recipeId = recipeEntity.getId();
 
-            for (Ingredient ingredient : recipe.getIngredients()) {
-                IngredientEntity ingredientEntity = new IngredientEntity(
+            for (net.husnilkamil.bakenow.retrofit.model.Ingredient ingredient : recipe.getIngredients()) {
+                Ingredient ingredientEntity = new Ingredient(
                         recipeId,
                         ingredient.getQuantity(),
                         ingredient.getMeasure(),
@@ -94,9 +109,8 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnR
                 ingredientEntity.save();
             }
 
-            for (Step step : recipe.getSteps()) {
-                StepEntity stepEntity = new StepEntity(
-                        step.getId(),
+            for (net.husnilkamil.bakenow.retrofit.model.Step step : recipe.getSteps()) {
+                Step stepEntity = new Step(
                         recipeId,
                         step.getShortDescription(),
                         step.getDescription(),
@@ -110,10 +124,10 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnR
     }
 
     @Override
-    public void onRecipeClick(int recipeId) {
+    public void onRecipeClick(long recipeId) {
 
         Intent detailIntent = new Intent(this, StepActivity.class);
-        detailIntent.putExtra(Recipe.KEY_RECIPE_ID, recipeId);
+        detailIntent.putExtra(net.husnilkamil.bakenow.retrofit.model.Recipe.KEY_RECIPE_ID, recipeId);
 
         startActivity(detailIntent);
 

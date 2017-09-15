@@ -1,6 +1,6 @@
 package net.husnilkamil.bakenow.retrofit;
 
-import net.husnilkamil.bakenow.model.Recipe;
+import net.husnilkamil.bakenow.retrofit.model.Recipe;
 
 import java.util.List;
 
