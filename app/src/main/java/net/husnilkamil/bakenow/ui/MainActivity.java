@@ -48,11 +48,11 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnR
                 .add(R.id.recipe_fragment_container, recipesFragment)
                 .commit();
 
-        recipeInterface = RecipeApiUtils.getRecipes();
-
     }
 
     private void getRecipesFromServer() {
+
+        recipeInterface = RecipeApiUtils.getRecipes();
 
         recipeInterface.getRecipes().enqueue(new Callback<List<net.husnilkamil.bakenow.retrofit.model.Recipe>>() {
 
@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnR
                     List<net.husnilkamil.bakenow.retrofit.model.Recipe> data = response.body();
                     Log.d(TAG, "Total data " + data.size());
                     saveToDb(data);
+                    recipesFragment.loadRecipesFromDb();
                 }else{
                     int statusCode = response.code();
                     Log.d(TAG, "Cannot Retrieve data. Error code " + statusCode);

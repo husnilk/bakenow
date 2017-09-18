@@ -3,8 +3,8 @@
     xmlns:tool="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:paddingLeft="8dp"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -19,11 +19,13 @@
         android:id="@+id/tv_quantity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        tool:text="2"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:gravity="end"
+        tool:text="2" />
 
     <TextView
         android:id="@+id/tv_measure"
+        android:paddingLeft="4dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         tool:text="cup"

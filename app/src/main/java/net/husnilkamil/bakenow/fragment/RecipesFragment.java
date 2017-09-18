@@ -57,7 +57,7 @@ public class RecipesFragment extends Fragment {
         this.mRecipeOnClickListener = onRecipeClickListener;
     }
 
-    private void loadRecipesFromDb() {
+    public void loadRecipesFromDb() {
         List<Recipe> data = Recipe.listAll(Recipe.class);
         Log.d(TAG, "Data Count : " + data.size());
         if(mRecipeAdapter != null) {

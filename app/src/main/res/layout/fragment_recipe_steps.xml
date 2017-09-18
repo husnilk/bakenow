@@ -1,39 +1,60 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginTop="@dimen/view_margin"
-    android:layout_marginBottom="@dimen/view_margin"
+    android:layout_height="wrap_content"
     tools:context="net.husnilkamil.bakenow.fragment.RecipeStepsFragment">
 
-
-    <TextView
-        android:id="@+id/text_recipe_title"
-        tools:text="Recipe Title"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/view_margin"
+        android:layout_marginTop="@dimen/view_margin"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/text_recipe_ingredient_title"
-        tools:text="Ingredients"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/text_recipe_ingredient_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/view_margin"
+            android:layout_marginBottom="@dimen/view_margin"
+            android:text="@string/recipe_ingredient_title"
+            android:textColor="@color/colorPrimaryText"
+            android:textSize="18sp" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_ingredients"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="4dp">
 
-    <TextView
-        android:id="@+id/text_recipe_step_title"
-        tools:text="Steps"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_steps"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_ingredients"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="@dimen/view_margin" />
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/text_recipe_step_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/recipe_step_detail"
+            android:textColor="@color/colorPrimaryText"
+            android:textSize="18sp" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_steps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingRight="@dimen/view_margin" />
+
+    </LinearLayout>
+</ScrollView>

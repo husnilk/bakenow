@@ -13,6 +13,7 @@ public class Recipe extends SugarRecord<Recipe> {
     public static final String KEY_RECIPE_ID = "key_recipe_id";
 
     long id;
+    int recipeId;
     String name;
     Integer servings;
     String image;
@@ -27,6 +28,14 @@ public class Recipe extends SugarRecord<Recipe> {
         this.name = name;
         this.servings = servings;
         this.image = image;
+    }
+
+    public int getRecipeId() {
+        return recipeId;
+    }
+
+    public void setRecipeId(int recipeId){
+        this.recipeId = recipeId;
     }
 
     public String getName() {

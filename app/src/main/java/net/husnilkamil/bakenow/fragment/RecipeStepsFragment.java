@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import net.husnilkamil.bakenow.R;
 import net.husnilkamil.bakenow.adapter.IngredientAdapter;
@@ -73,12 +74,14 @@ public class RecipeStepsFragment extends Fragment {
     }
 
     private void loadData() {
-        Recipe recipe = Recipe.findById(Recipe.class, recipeId);
+        Log.d(TAG, "Recipe ID " + recipeId);
+
         List<Step> steps = Step.find(Step.class, "recipe_id=?", String.valueOf(recipeId));
         List<Ingredient> ingredients = Ingredient.find(Ingredient.class, "recipe_id=?", String.valueOf(recipeId));
 
         Log.d(TAG, "Steps Count : " + steps.size());
         Log.d(TAG, "Ingredients counts : " + ingredients.size());
+
         mIngredientAdapter.setData(ingredients);
         mStepAdapter.setData(steps);
 

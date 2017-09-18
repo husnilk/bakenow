@@ -34,10 +34,11 @@ public class StepActivity extends AppCompatActivity implements StepAdapter.OnSte
         Intent recipeDetailIntent = getIntent();
         if(recipeDetailIntent != null) {
             recipeId = recipeDetailIntent.getLongExtra(Recipe.KEY_RECIPE_ID, 0);
+            Recipe recipe = Recipe.findById(Recipe.class, recipeId);
+            getSupportActionBar().setTitle(recipe.getName());
             recipeStepsFragment.setRecipeId(recipeId);
             Log.d(TAG, "Recipe ID : " + String.valueOf(recipeId));
         }
-
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.recipe_detail_fragment_container, recipeStepsFragment)
                 .commit();
@@ -48,6 +49,7 @@ public class StepActivity extends AppCompatActivity implements StepAdapter.OnSte
     public void onStepClick(long id) {
 
         Intent stepDetailIntent = new Intent(this, StepDetailActivity.class);
+        stepDetailIntent.putExtra(Recipe.KEY_RECIPE_ID, recipeId);
         stepDetailIntent.putExtra(Step.KEY_STEP_ID, id);
 
         startActivity(stepDetailIntent);

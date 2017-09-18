@@ -23,7 +23,9 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepHolder> {
     List<Step> data;
     OnStepClickListener stepClickListener;
 
+
     public StepAdapter(){
+
     }
 
     @Override
@@ -58,8 +60,6 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepHolder> {
     }
 
     public class StepHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        @BindView(R.id.tv_step_no)
-        TextView mStepNoText;
         @BindView(R.id.tv_step_short_desc)
         TextView mStepShortDescText;
 
@@ -73,7 +73,6 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepHolder> {
         }
 
         public void bind(Step step){
-            mStepNoText.setText(String.valueOf(step.getId()));
             mStepShortDescText.setText(step.getShortDescription());
             itemView.setTag(step.getId());
         }
