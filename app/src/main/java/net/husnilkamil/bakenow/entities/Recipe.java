@@ -23,8 +23,8 @@ public class Recipe extends SugarRecord<Recipe> {
 
     public Recipe() {}
 
-    public Recipe(long id, String name, Integer servings, String image) {
-        this.id = id;
+    public Recipe(int recipeId, String name, Integer servings, String image) {
+        this.recipeId = recipeId;
         this.name = name;
         this.servings = servings;
         this.image = image;

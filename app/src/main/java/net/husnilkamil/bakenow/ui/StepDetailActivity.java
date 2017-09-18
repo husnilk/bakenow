@@ -6,6 +6,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.PlaybackParameters;
+import com.google.android.exoplayer2.Timeline;
+import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
+
 import net.husnilkamil.bakenow.R;
 import net.husnilkamil.bakenow.entities.Recipe;
 import net.husnilkamil.bakenow.entities.Step;
@@ -89,5 +96,4 @@ public class StepDetailActivity extends AppCompatActivity{
         }
         return -1;
     }
-
 }

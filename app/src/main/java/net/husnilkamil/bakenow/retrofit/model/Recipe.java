@@ -8,7 +8,7 @@ public class Recipe {
 
     @SerializedName("id")
     @Expose
-    private long id;
+    private int id;
     @SerializedName("name")
     @Expose
     private String name;
@@ -25,7 +25,7 @@ public class Recipe {
     @Expose
     private String image;
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 

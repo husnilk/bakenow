@@ -15,6 +15,7 @@ import net.husnilkamil.bakenow.entities.Recipe;
 import net.husnilkamil.bakenow.entities.Step;
 import net.husnilkamil.bakenow.fragment.RecipesFragment;
 import net.husnilkamil.bakenow.retrofit.RecipeInterface;
+import net.husnilkamil.bakenow.utils.DataUtils;
 import net.husnilkamil.bakenow.utils.RecipeApiUtils;
 
 import java.util.List;
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnR
                 if(response.isSuccessful()){
                     List<net.husnilkamil.bakenow.retrofit.model.Recipe> data = response.body();
                     Log.d(TAG, "Total data " + data.size());
-                    saveToDb(data);
+                    DataUtils.saveToDb(data);
                     recipesFragment.loadRecipesFromDb();
                 }else{
                     int statusCode = response.code();
@@ -75,46 +76,6 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnR
             }
 
         });
-    }
-
-    private void saveToDb(List<net.husnilkamil.bakenow.retrofit.model.Recipe> data){
-
-        Step.deleteAll(Step.class);
-        Ingredient.deleteAll(Ingredient.class);
-        Recipe.deleteAll(Recipe.class);
-
-        for (net.husnilkamil.bakenow.retrofit.model.Recipe recipe : data) {
-            Recipe recipeEntity = new Recipe(
-                    recipe.getId(),
-                    recipe.getName(),
-                    recipe.getServings(),
-                    recipe.getImage());
-            recipeEntity.save();
-
-            Long recipeId = recipeEntity.getId();
-
-            for (net.husnilkamil.bakenow.retrofit.model.Ingredient ingredient : recipe.getIngredients()) {
-                Ingredient ingredientEntity = new Ingredient(
-                        recipeId,
-                        ingredient.getQuantity(),
-                        ingredient.getMeasure(),
-                        ingredient.getIngredient()
-                );
-                ingredientEntity.save();
-            }
-
-            for (net.husnilkamil.bakenow.retrofit.model.Step step : recipe.getSteps()) {
-                Step stepEntity = new Step(
-                        recipeId,
-                        step.getShortDescription(),
-                        step.getDescription(),
-                        step.getVideoURL(),
-                        step.getThumbnailURL()
-                );
-                stepEntity.save();
-            }
-        }
-
     }
 
     @Override

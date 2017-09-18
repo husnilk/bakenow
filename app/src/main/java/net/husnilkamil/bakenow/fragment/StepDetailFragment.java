@@ -32,13 +32,14 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
+import net.husnilkamil.bakenow.ExoListener;
 import net.husnilkamil.bakenow.R;
 import net.husnilkamil.bakenow.entities.Step;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class StepDetailFragment extends Fragment{
+public class StepDetailFragment extends Fragment implements Player.EventListener{
 
     public final static String TAG = "StepDetailFragment";
 
@@ -88,6 +89,7 @@ public class StepDetailFragment extends Fragment{
             TrackSelector trackSelector = new DefaultTrackSelector();
             LoadControl loadControl = new DefaultLoadControl();
             mExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(),trackSelector, loadControl);
+            mExoPlayer.addListener(this);
             mExoPlayerView.setPlayer(mExoPlayer);
 
             String userAgent = Util.getUserAgent(getContext(), "Bakenow");
@@ -100,6 +102,7 @@ public class StepDetailFragment extends Fragment{
     public void releasePlayer(){
         mExoPlayer.stop();
         mExoPlayer.release();
+        mExoPlayer.removeListener(this);
         mExoPlayer = null;
     }
 
@@ -109,4 +112,50 @@ public class StepDetailFragment extends Fragment{
         releasePlayer();
     }
 
+    @Override
+    public void onTimelineChanged(Timeline timeline, Object manifest) {
+
+    }
+
+    @Override
+    public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+
+    }
+
+    @Override
+    public void onLoadingChanged(boolean isLoading) {
+
+    }
+
+    @Override
+    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+        switch (playbackState){
+            case Player.STATE_READY:
+                Log.d(TAG, "Player is ready");
+                break;
+            case Player.STATE_ENDED:
+                Log.d(TAG, "Player is finishing video");
+                break;
+        }
+    }
+
+    @Override
+    public void onRepeatModeChanged(int repeatMode) {
+
+    }
+
+    @Override
+    public void onPlayerError(ExoPlaybackException error) {
+        releasePlayer();
+    }
+
+    @Override
+    public void onPositionDiscontinuity() {
+
+    }
+
+    @Override
+    public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
+
+    }
 }
