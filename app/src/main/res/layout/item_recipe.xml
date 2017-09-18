@@ -1,30 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/frameLayout">
+    android:layout_marginBottom="2dp"
+    android:layout_marginLeft="@dimen/view_margin"
+    android:layout_marginRight="@dimen/view_margin"
+    android:layout_marginTop="2dp"
+    app:cardBackgroundColor="@color/colorPrimaryLight"
+    app:cardCornerRadius="2dp"
+    app:cardElevation="2dp">
 
-    <ImageView
-        android:id="@+id/img_recipe_image"
-        android:layout_width="114dp"
-        android:layout_height="104dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/dining_icon" />
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/text_recipe_title"
-        android:textSize="24sp"
-        android:layout_width="233dp"
-        android:layout_height="67dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="0dp"
-        android:text="TextView"
-        app:layout_constraintStart_toEndOf="@+id/img_recipe_image"
-        app:layout_constraintTop_toTopOf="@+id/img_recipe_image" />
+        <ImageView
+            android:id="@+id/img_recipe_image"
+            android:layout_width="114dp"
+            android:layout_height="104dp"
+            android:layout_marginBottom="@dimen/view_margin"
+            android:layout_marginStart="@dimen/view_margin"
+            android:layout_marginTop="@dimen/view_margin"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/dining_icon" />
 
-</android.support.constraint.ConstraintLayout>
+        <TextView
+            android:id="@+id/text_recipe_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/view_margin"
+            android:layout_marginStart="@dimen/view_margin"
+            android:layout_marginTop="32dp"
+            android:textColor="@color/colorPrimaryText"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/img_recipe_image"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Recipe Name" />
+
+        <TextView
+            android:id="@+id/text_recipe_serving"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/colorSecondaryText"
+            app:layout_constraintStart_toStartOf="@+id/text_recipe_title"
+            app:layout_constraintTop_toBottomOf="@+id/text_recipe_title"
+            tools:text="serving for 8" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>

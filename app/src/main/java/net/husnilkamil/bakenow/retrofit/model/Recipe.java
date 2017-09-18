@@ -6,8 +6,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class Recipe {
 
-    public static final String KEY_RECIPE_ID = "key_recipe_id";
-
     @SerializedName("id")
     @Expose
     private long id;

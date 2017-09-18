@@ -2,6 +2,7 @@ package net.husnilkamil.bakenow.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +25,13 @@ import butterknife.ButterKnife;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeHolder> {
 
+    private static final String TAG = "RecipeAdapter";
+
     private List<Recipe> recipes;
     private OnRecipeClickListener mRecipeClickListener;
 
     public void setOnClickListener(OnRecipeClickListener mRecipeClickListener) {
+        Log.d(TAG, mRecipeClickListener.toString());
         this.mRecipeClickListener = mRecipeClickListener;
     }
 
@@ -66,6 +70,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeHold
         ImageView mRecipeImage;
         @BindView(R.id.text_recipe_title)
         TextView mTextRecipeTitle;
+        @BindView(R.id.text_recipe_serving)
+        TextView mTextRecipeServing;
 
         View view;
         Context context;
@@ -79,7 +85,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeHold
         }
 
         public void bind(Recipe recipe){
+            String servingText = "serving for " + recipe.getServings();
             mTextRecipeTitle.setText(recipe.getName());
+            mTextRecipeServing.setText(servingText);
             if(recipe.getImage() == "" || recipe.getImage().equals("")){
                 mRecipeImage.setImageResource(R.drawable.dining_icon);
             }else {

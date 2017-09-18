@@ -1,4 +1,4 @@
-package net.husnilkamil.bakenow;
+package net.husnilkamil.bakenow.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import net.husnilkamil.bakenow.R;
 import net.husnilkamil.bakenow.adapter.RecipeAdapter;
 import net.husnilkamil.bakenow.entities.Ingredient;
 import net.husnilkamil.bakenow.entities.Recipe;
@@ -33,29 +34,22 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnR
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        recipeInterface = RecipeApiUtils.getRecipes();
-
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
         if(isConnected){
             getRecipesFromServer();
-        } else {
-            loadRecipesFromDb();
         }
 
         recipesFragment = new RecipesFragment();
+        recipesFragment.setAdapterClickListener(this);
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.recipe_fragment_container, recipesFragment)
                 .commit();
 
-    }
+        recipeInterface = RecipeApiUtils.getRecipes();
 
-    private void loadRecipesFromDb() {
-        List<Recipe> data = Recipe.listAll(Recipe.class);
-        recipesFragment.setRecipeData(data);
-        recipesFragment.setAdapterClickListener(this);
     }
 
     private void getRecipesFromServer() {
@@ -68,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnR
                     List<net.husnilkamil.bakenow.retrofit.model.Recipe> data = response.body();
                     Log.d(TAG, "Total data " + data.size());
                     saveToDb(data);
-                    loadRecipesFromDb();
                 }else{
                     int statusCode = response.code();
                     Log.d(TAG, "Cannot Retrieve data. Error code " + statusCode);
@@ -77,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnR
 
             @Override
             public void onFailure(Call<List<net.husnilkamil.bakenow.retrofit.model.Recipe>> call, Throwable t) {
-                Log.d(TAG, t.getMessage());
+                Log.d(TAG, "Failed : " + t.getMessage());
             }
 
         });
@@ -127,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnR
     public void onRecipeClick(long recipeId) {
 
         Intent detailIntent = new Intent(this, StepActivity.class);
-        detailIntent.putExtra(net.husnilkamil.bakenow.retrofit.model.Recipe.KEY_RECIPE_ID, recipeId);
+        detailIntent.putExtra(Recipe.KEY_RECIPE_ID, recipeId);
 
         startActivity(detailIntent);
 

@@ -15,14 +15,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
-        <activity android:name=".MainActivity">
+        <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".StepActivity" />
+        <activity android:name=".ui.StepActivity" />
 
         <meta-data
             android:name="DATABASE"
@@ -37,7 +37,17 @@
             android:name="DOMAIN_PACKAGE_NAME"
             android:value="net.husnilkamil.bakenow" />
 
-        <activity android:name=".StepDetailActivity"></activity>
+        <activity android:name=".ui.StepDetailActivity" />
+
+        <receiver android:name=".RecipeWidgetPovider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/recipe_widget_povider_info" />
+        </receiver>
     </application>
 
 </manifest>
