@@ -9,10 +9,10 @@
     <FrameLayout
         android:id="@+id/step_fragment_container"
         android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:layout_height="match_parent" />
 
-    <view
+    <View
         android:layout_width="1dp"
         android:layout_height="match_parent"
         android:background="@color/colorSecondaryText" />

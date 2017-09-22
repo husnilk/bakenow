@@ -94,22 +94,23 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
 
             String userAgent = Util.getUserAgent(getContext(), "Bakenow");
             MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(getContext(), userAgent), new DefaultExtractorsFactory(), null, null);
-            mExoPlayer.prepare(mediaSource);
+            mExoPlayer.prepare(mediaSource,true, true);
             //mExoPlayer.setPlayWhenReady(true);
         }
     }
 
     public void releasePlayer(){
-        mExoPlayer.stop();
-        mExoPlayer.release();
-        mExoPlayer.removeListener(this);
-        mExoPlayer = null;
+        if(mExoPlayer != null) {
+            mExoPlayer.stop();
+            mExoPlayer.release();
+            mExoPlayer.removeListener(this);
+            mExoPlayer = null;
+        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        releasePlayer();
     }
 
     @Override
@@ -147,6 +148,7 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
     @Override
     public void onPlayerError(ExoPlaybackException error) {
         releasePlayer();
+        //mExoPlayerView.setVisibility(View.GONE);
     }
 
     @Override

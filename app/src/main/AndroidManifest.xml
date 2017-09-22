@@ -26,7 +26,7 @@
 
         <meta-data
             android:name="DATABASE"
-            android:value="bakenow.db" />
+            android:value="bakenowv1.db" />
         <meta-data
             android:name="VERSION"
             android:value="3" />

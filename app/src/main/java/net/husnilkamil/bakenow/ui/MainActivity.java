@@ -2,6 +2,7 @@ package net.husnilkamil.bakenow.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
@@ -24,7 +25,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnRecipeClickListener{
+public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnRecipeClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     RecipeInterface recipeInterface;
@@ -39,7 +40,9 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnR
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-        if(isConnected){
+
+        if (isConnected) {
+            Log.d(TAG, "connected");
             getRecipesFromServer();
         }
 
@@ -59,12 +62,12 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnR
 
             @Override
             public void onResponse(Call<List<net.husnilkamil.bakenow.retrofit.model.Recipe>> call, Response<List<net.husnilkamil.bakenow.retrofit.model.Recipe>> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     List<net.husnilkamil.bakenow.retrofit.model.Recipe> data = response.body();
                     Log.d(TAG, "Total data " + data.size());
                     DataUtils.saveToDb(data);
                     recipesFragment.loadRecipesFromDb();
-                }else{
+                } else {
                     int statusCode = response.code();
                     Log.d(TAG, "Cannot Retrieve data. Error code " + statusCode);
                 }
@@ -86,5 +89,11 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnR
 
         startActivity(detailIntent);
 
+    }
+
+    public boolean isTablet(Context context) {
+        boolean xlarge = ((context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == 4);
+        boolean large = ((context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE);
+        return (xlarge || large);
     }
 }
