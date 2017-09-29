@@ -27,6 +27,7 @@ public class StepDetailActivity extends AppCompatActivity{
 
     long stepId, recipeId;
     List<Step> stepList;
+    StepDetailFragment stepDetailFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +38,7 @@ public class StepDetailActivity extends AppCompatActivity{
 
         Intent detailIntent = getIntent();
 
-        StepDetailFragment stepDetailFragment = new StepDetailFragment();
+        stepDetailFragment = new StepDetailFragment();
 
         if(detailIntent != null) {
             recipeId = detailIntent.getLongExtra(Recipe.KEY_RECIPE_ID, 0);
@@ -60,8 +61,9 @@ public class StepDetailActivity extends AppCompatActivity{
         }else{
             idx--;
             Step step = stepList.get(idx);
+            stepDetailFragment.releasePlayer();
             stepId = step.getId();
-            StepDetailFragment stepDetailFragment = new StepDetailFragment();
+            stepDetailFragment = new StepDetailFragment();
             stepDetailFragment.setStepId(stepId);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.step_detail_fragment_container, stepDetailFragment)
@@ -76,9 +78,10 @@ public class StepDetailActivity extends AppCompatActivity{
             Toast.makeText(this, "This is the last step", Toast.LENGTH_SHORT).show();
         }else{
             idx++;
+            stepDetailFragment.releasePlayer();
             Step step = stepList.get(idx);
             stepId = step.getId();
-            StepDetailFragment stepDetailFragment = new StepDetailFragment();
+            stepDetailFragment = new StepDetailFragment();
             stepDetailFragment.setStepId(stepId);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.step_detail_fragment_container, stepDetailFragment)

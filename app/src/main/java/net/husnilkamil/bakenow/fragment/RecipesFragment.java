@@ -1,13 +1,17 @@
 package net.husnilkamil.bakenow.fragment;
 
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import net.husnilkamil.bakenow.R;
 import net.husnilkamil.bakenow.adapter.RecipeAdapter;
@@ -24,10 +28,12 @@ import static android.content.ContentValues.TAG;
 public class RecipesFragment extends Fragment {
     private final static String TAG = "RecipesFragment";
 
-    @BindView(R.id.rv_recipes) RecyclerView mRecipeRecyclerView;
+    @BindView(R.id.rv_recipes)
+    RecyclerView mRecipeRecyclerView;
 
     private RecipeAdapter mRecipeAdapter;
     RecipeAdapter.OnRecipeClickListener mRecipeOnClickListener;
+    boolean displayOnGrid = false;
 
     public RecipesFragment() {}
 
@@ -39,7 +45,13 @@ public class RecipesFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         mRecipeRecyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+
+        RecyclerView.LayoutManager layoutManager;
+        if(displayOnGrid){
+            layoutManager = new GridLayoutManager(getContext(), 2);
+        }else{
+            layoutManager = new LinearLayoutManager(getContext());
+        }
         mRecipeRecyclerView.setLayoutManager(layoutManager);
 
         mRecipeAdapter = new RecipeAdapter();
@@ -63,5 +75,9 @@ public class RecipesFragment extends Fragment {
         if(mRecipeAdapter != null) {
             mRecipeAdapter.setRecipes(data);
         }
+    }
+
+    public void setDisplayOnGrid(boolean displayOnGrid){
+        this.displayOnGrid = displayOnGrid;
     }
 }

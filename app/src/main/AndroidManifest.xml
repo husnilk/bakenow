@@ -22,7 +22,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.StepActivity" />
+
+        <activity android:name=".ui.StepActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="net.husnilkamil.bakenow.ui.MainActivity" />
+        </activity>
 
         <meta-data
             android:name="DATABASE"

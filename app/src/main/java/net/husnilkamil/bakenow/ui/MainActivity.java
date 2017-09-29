@@ -46,7 +46,11 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnR
             getRecipesFromServer();
         }
 
+
         recipesFragment = new RecipesFragment();
+        if(findViewById(R.id.layout_main_sw600dp) != null){
+            recipesFragment.setDisplayOnGrid(true);
+        }
         recipesFragment.setAdapterClickListener(this);
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.recipe_fragment_container, recipesFragment)

@@ -4,7 +4,7 @@
     android:initialLayout="@layout/recipe_widget_povider"
     android:minHeight="40dp"
     android:minWidth="120dp"
-    android:previewImage="@drawable/example_appwidget_preview"
-    android:resizeMode="horizontal"
+    android:previewImage="@drawable/dining_icon"
+    android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="1800000"
     android:widgetCategory="home_screen" />

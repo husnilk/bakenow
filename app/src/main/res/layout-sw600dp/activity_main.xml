@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="@dimen/view_margin"
+    android:id="@+id/layout_main_sw600dp"
     tools:context="net.husnilkamil.bakenow.ui.MainActivity">
 
     <FrameLayout

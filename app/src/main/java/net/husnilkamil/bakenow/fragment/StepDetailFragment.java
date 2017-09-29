@@ -9,12 +9,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
-import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.PlaybackParameters;
@@ -32,8 +31,8 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
-import net.husnilkamil.bakenow.ExoListener;
 import net.husnilkamil.bakenow.R;
+
 import net.husnilkamil.bakenow.entities.Step;
 
 import butterknife.BindView;
@@ -48,6 +47,9 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
 
     @BindView(R.id.description_text)
     TextView mDescription;
+
+    @BindView(R.id.recipe_video_not_found)
+    ImageView mImageNoVideo;
 
     private long stepId;
     SimpleExoPlayer mExoPlayer;
@@ -95,7 +97,7 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
             String userAgent = Util.getUserAgent(getContext(), "Bakenow");
             MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(getContext(), userAgent), new DefaultExtractorsFactory(), null, null);
             mExoPlayer.prepare(mediaSource,true, true);
-            //mExoPlayer.setPlayWhenReady(true);
+            mExoPlayer.setPlayWhenReady(true);
         }
     }
 
@@ -110,6 +112,7 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
 
     @Override
     public void onDestroyView() {
+        releasePlayer();
         super.onDestroyView();
     }
 
@@ -147,8 +150,9 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
 
     @Override
     public void onPlayerError(ExoPlaybackException error) {
+        mExoPlayerView.setVisibility(View.GONE);
         releasePlayer();
-        //mExoPlayerView.setVisibility(View.GONE);
+        mImageNoVideo.setVisibility(View.VISIBLE);
     }
 
     @Override
