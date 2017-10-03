@@ -42,7 +42,11 @@
             android:name="DOMAIN_PACKAGE_NAME"
             android:value="net.husnilkamil.bakenow" />
 
-        <activity android:name=".ui.StepDetailActivity" />
+        <activity android:name=".ui.StepDetailActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="net.husnilkamil.bakenow.ui.StepActivity" />
+        </activity>
 
         <receiver android:name=".RecipeWidgetPovider">
             <intent-filter>

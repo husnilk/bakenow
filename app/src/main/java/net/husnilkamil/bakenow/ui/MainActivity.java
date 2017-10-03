@@ -2,25 +2,31 @@ package net.husnilkamil.bakenow.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingResource;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import net.husnilkamil.bakenow.R;
 import net.husnilkamil.bakenow.adapter.RecipeAdapter;
-import net.husnilkamil.bakenow.entities.Ingredient;
 import net.husnilkamil.bakenow.entities.Recipe;
-import net.husnilkamil.bakenow.entities.Step;
-import net.husnilkamil.bakenow.fragment.RecipesFragment;
+import net.husnilkamil.bakenow.idlingres.SimpleIdlingResource;
 import net.husnilkamil.bakenow.retrofit.RecipeInterface;
 import net.husnilkamil.bakenow.utils.DataUtils;
 import net.husnilkamil.bakenow.utils.RecipeApiUtils;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -28,33 +34,62 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnRecipeClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    @BindView(R.id.rv_recipes)
+    RecyclerView mRecipeRecyclerView;
+
     RecipeInterface recipeInterface;
-    RecipesFragment recipesFragment;
+    RecipeAdapter mRecipeAdapter;
+    RecipeAdapter.OnRecipeClickListener mRecipeOnClickListener;
+    boolean dataLoaded = false;
+
+    @Nullable
+    private SimpleIdlingResource mIdlingResource;
+
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource() {
+        if (mIdlingResource == null) {
+            mIdlingResource = new SimpleIdlingResource();
+        }
+        return mIdlingResource;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ButterKnife.bind(this);
 
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
 
-        if (isConnected) {
+        getIdlingResource();
+
+        if (isConnected && !dataLoaded) {
             Log.d(TAG, "connected");
             getRecipesFromServer();
+            dataLoaded = true;
+        }else{
+            Log.d(TAG, "not connected");
         }
 
+        mRecipeRecyclerView.setHasFixedSize(true);
 
-        recipesFragment = new RecipesFragment();
-        if(findViewById(R.id.layout_main_sw600dp) != null){
-            recipesFragment.setDisplayOnGrid(true);
+        RecyclerView.LayoutManager layoutManager;
+        if(getResources().getBoolean(R.bool.isTablet)){
+            layoutManager = new GridLayoutManager(this, 2);
+        }else{
+            layoutManager = new LinearLayoutManager(this);
         }
-        recipesFragment.setAdapterClickListener(this);
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.recipe_fragment_container, recipesFragment)
-                .commit();
+        mRecipeRecyclerView.setLayoutManager(layoutManager);
+        mRecipeAdapter = new RecipeAdapter();
+        mRecipeRecyclerView.setAdapter(mRecipeAdapter);
+        mRecipeAdapter.setOnClickListener(this);
+
+        loadRecipesFromDb();
 
     }
 
@@ -70,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnR
                     List<net.husnilkamil.bakenow.retrofit.model.Recipe> data = response.body();
                     Log.d(TAG, "Total data " + data.size());
                     DataUtils.saveToDb(data);
-                    recipesFragment.loadRecipesFromDb();
+                    loadRecipesFromDb();
                 } else {
                     int statusCode = response.code();
                     Log.d(TAG, "Cannot Retrieve data. Error code " + statusCode);
@@ -85,19 +120,34 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnR
         });
     }
 
+    public void loadRecipesFromDb() {
+        List<Recipe> data = Recipe.listAll(Recipe.class);
+        Log.d(TAG, "Data Count : " + data.size());
+        if(mRecipeAdapter != null) {
+            mRecipeAdapter.setRecipes(data);
+        }
+    }
+
     @Override
-    public void onRecipeClick(long recipeId) {
+    public void onRecipeClick(int recipeId) {
+
+        Log.d(TAG, "Recipe ID: " + recipeId);
 
         Intent detailIntent = new Intent(this, StepActivity.class);
         detailIntent.putExtra(Recipe.KEY_RECIPE_ID, recipeId);
-
         startActivity(detailIntent);
 
     }
 
-    public boolean isTablet(Context context) {
-        boolean xlarge = ((context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == 4);
-        boolean large = ((context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE);
-        return (xlarge || large);
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(getString(R.string.loaded_data_key), dataLoaded);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        dataLoaded = savedInstanceState.getBoolean(getString(R.string.loaded_data_key));
+        super.onRestoreInstanceState(savedInstanceState);
     }
 }

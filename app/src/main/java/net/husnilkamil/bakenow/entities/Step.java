@@ -12,15 +12,16 @@ public class Step extends SugarRecord<Step> {
     @Ignore
     public static final String KEY_STEP_ID = "key_step_id";
 
-    long recipeId;
+    int recipeId;
     String shortDescription;
     String description;
     String videoURL;
     String thumbnailURL;
 
-    public Step() {}
+    public Step() {
+    }
 
-    public Step(Long recipeId, String shortDescription, String description, String videoURL, String thumbnailURL) {
+    public Step(int recipeId, String shortDescription, String description, String videoURL, String thumbnailURL) {
         this.recipeId = recipeId;
         this.shortDescription = shortDescription;
         this.description = description;
@@ -28,43 +29,24 @@ public class Step extends SugarRecord<Step> {
         this.thumbnailURL = thumbnailURL;
     }
 
-    public long getRecipeId() {
+    public int getRecipeId() {
         return recipeId;
-    }
-
-    public void setRecipeId(long recipeId) {
-        this.recipeId = recipeId;
     }
 
     public String getShortDescription() {
         return shortDescription;
     }
 
-    public void setShortDescription(String shortDescription) {
-        this.shortDescription = shortDescription;
-    }
-
     public String getDescription() {
         return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getVideoURL() {
         return videoURL;
     }
 
-    public void setVideoURL(String videoURL) {
-        this.videoURL = videoURL;
-    }
-
     public String getThumbnailURL() {
         return thumbnailURL;
     }
 
-    public void setThumbnailURL(String thumbnailURL) {
-        this.thumbnailURL = thumbnailURL;
-    }
 }

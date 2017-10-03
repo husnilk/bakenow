@@ -85,6 +85,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeHold
         }
 
         public void bind(Recipe recipe){
+            Log.d(TAG, "Recipe ID : " + recipe.getId());
             String servingText = "serving for " + recipe.getServings();
             mTextRecipeTitle.setText(recipe.getName());
             mTextRecipeServing.setText(servingText);
@@ -94,17 +95,17 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeHold
                 String imageUrl = recipe.getImage();
                 Picasso.with(context).load(imageUrl).into(mRecipeImage);
             }
-            view.setTag(recipe.getId());
+            view.setTag(recipe.getRecipeId());
         }
 
         @Override
         public void onClick(View view) {
-            long recipeId = (long) view.getTag();
+            int recipeId = (int) view.getTag();
             mRecipeClickListener.onRecipeClick(recipeId);
         }
     }
 
     public interface OnRecipeClickListener {
-        void onRecipeClick(long recipeId);
+        void onRecipeClick(int recipeId);
     }
 }

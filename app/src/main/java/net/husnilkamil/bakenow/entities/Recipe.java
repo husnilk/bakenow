@@ -34,31 +34,15 @@ public class Recipe extends SugarRecord<Recipe> {
         return recipeId;
     }
 
-    public void setRecipeId(int recipeId){
-        this.recipeId = recipeId;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public Integer getServings() {
         return servings;
     }
 
-    public void setServings(Integer servings) {
-        this.servings = servings;
-    }
-
     public String getImage() {
         return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
     }
 }

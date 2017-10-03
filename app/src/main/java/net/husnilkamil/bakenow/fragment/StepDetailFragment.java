@@ -138,6 +138,7 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
                 Log.d(TAG, "Player is ready");
                 break;
             case Player.STATE_ENDED:
+                mExoPlayer.release();
                 Log.d(TAG, "Player is finishing video");
                 break;
         }

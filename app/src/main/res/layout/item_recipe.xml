@@ -24,6 +24,7 @@
             android:layout_height="104dp"
             android:layout_marginBottom="@dimen/view_margin"
             android:layout_marginStart="@dimen/view_margin"
+            android:layout_marginLeft="@dimen/view_margin"
             android:layout_marginTop="@dimen/view_margin"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

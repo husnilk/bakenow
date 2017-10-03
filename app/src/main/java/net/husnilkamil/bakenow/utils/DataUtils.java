@@ -25,7 +25,7 @@ public class DataUtils {
                     recipe.getImage());
             recipeEntity.save();
 
-            Long recipeId = recipeEntity.getId();
+            int recipeId = recipeEntity.getRecipeId();
 
             for (net.husnilkamil.bakenow.retrofit.model.Ingredient ingredient : recipe.getIngredients()) {
                 Ingredient ingredientEntity = new Ingredient(

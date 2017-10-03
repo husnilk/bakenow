@@ -12,9 +12,9 @@
 
 <LinearLayout
     android:orientation="horizontal"
-    android:paddingLeft="8dp"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
+    android:paddingLeft="@dimen/view_margin"
+    android:paddingTop="@dimen/view_margin"
+    android:paddingBottom="@dimen/view_margin"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 

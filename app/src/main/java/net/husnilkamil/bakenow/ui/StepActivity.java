@@ -32,8 +32,9 @@ public class StepActivity extends AppCompatActivity implements StepAdapter.OnSte
     private static final String TAG = StepActivity.class.getSimpleName();
 
     boolean isTwoPane;
-    long recipeId;
+    int recipeId;
     long stepId;
+
     Recipe recipe;
     FragmentManager fragmentManager;
     RecipeStepsFragment recipeStepsFragment;
@@ -46,8 +47,13 @@ public class StepActivity extends AppCompatActivity implements StepAdapter.OnSte
 
         Intent recipeDetailIntent = getIntent();
         if (recipeDetailIntent != null) {
-            recipeId = recipeDetailIntent.getLongExtra(Recipe.KEY_RECIPE_ID, 0);
-            recipe = Recipe.findById(Recipe.class, recipeId);
+            recipeId = recipeDetailIntent.getIntExtra(Recipe.KEY_RECIPE_ID, 1);
+            //recipe = Recipe.findById(Recipe.class, recipeId);
+            Log.d(TAG, String.valueOf(recipeId));
+            List<Recipe> recipes = Recipe.find(Recipe.class, "recipe_id = ?", String.valueOf(recipeId));
+            if(recipes != null){
+                recipe = recipes.get(0);
+            }
             ActionBar actionBar = getSupportActionBar();
             actionBar.setTitle(recipe.getName());
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -147,6 +153,23 @@ public class StepActivity extends AppCompatActivity implements StepAdapter.OnSte
         int ids[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), RecipeWidgetPovider.class));
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
         sendBroadcast(intent);
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(getString(R.string.two_pane_key), isTwoPane);
+        outState.putInt(getString(R.string.recipe_id_key), recipeId);
+        outState.putLong(getString(R.string.step_id_key), stepId);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        isTwoPane = savedInstanceState.getBoolean(getString(R.string.two_pane_key));
+        recipeId = savedInstanceState.getInt(getString(R.string.recipe_id_key));
+        stepId = savedInstanceState.getLong(getString(R.string.step_id_key));
 
     }
 }
