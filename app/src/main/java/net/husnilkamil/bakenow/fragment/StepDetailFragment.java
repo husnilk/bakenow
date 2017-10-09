@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -52,6 +53,8 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
     ImageView mImageNoVideo;
 
     private long stepId;
+    private boolean resuming = false;
+    private long currentVideoPosition = 0;
     SimpleExoPlayer mExoPlayer;
 
     public StepDetailFragment() {}
@@ -74,6 +77,7 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
     public void setStepId(long stepId) {
         this.stepId = stepId;
     }
+
     public void loadData(){
         Step step = Step.findById(Step.class, stepId);
         if(step != null){
@@ -96,7 +100,8 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
 
             String userAgent = Util.getUserAgent(getContext(), "Bakenow");
             MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(getContext(), userAgent), new DefaultExtractorsFactory(), null, null);
-            mExoPlayer.prepare(mediaSource,true, true);
+            mExoPlayer.prepare(mediaSource, !resuming, true);
+            mExoPlayer.seekTo(currentVideoPosition);
             mExoPlayer.setPlayWhenReady(true);
         }
     }
@@ -114,6 +119,41 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
     public void onDestroyView() {
         releasePlayer();
         super.onDestroyView();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(getString(R.string.current_video_position_key), currentVideoPosition);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if(savedInstanceState != null) {
+            currentVideoPosition = savedInstanceState.getLong(getString(R.string.current_video_position_key));
+            if (currentVideoPosition > 0) {
+                resuming = true;
+            }
+        }else{
+            resuming = false;
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(Util.SDK_INT <= 23){
+            releasePlayer();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(Util.SDK_INT > 23){
+            releasePlayer();
+        }
     }
 
     @Override
@@ -138,7 +178,7 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
                 Log.d(TAG, "Player is ready");
                 break;
             case Player.STATE_ENDED:
-                mExoPlayer.release();
+                resuming = false;
                 Log.d(TAG, "Player is finishing video");
                 break;
         }
@@ -154,6 +194,8 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
         mExoPlayerView.setVisibility(View.GONE);
         releasePlayer();
         mImageNoVideo.setVisibility(View.VISIBLE);
+        mImageNoVideo.setImageResource(R.drawable.no_video_image);
+        Toast.makeText(getContext(), "Couldn't load video", Toast.LENGTH_SHORT).show();
     }
 
     @Override

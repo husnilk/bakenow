@@ -31,22 +31,13 @@ public class RecipeWidgetPovider extends AppWidgetProvider {
                 context.getString(R.string.preference_file_key),
                 Context.MODE_PRIVATE);
 
-        String widgetIngredients = "";
         int recipeId = preferences.getInt(Recipe.KEY_RECIPE_ID, -1);
         if(recipeId != -1){
             List<Recipe> recipes = Recipe.find(Recipe.class, "recipe_id=?", String.valueOf(recipeId));
-            if(recipes != null) {
-                Recipe recipe = recipes.get(0);
-                List<Ingredient> ingredients = Ingredient.find(Ingredient.class, "recipe_id=?", String.valueOf(recipe.getId()));
-                for (Ingredient ingredient : ingredients) {
-                    widgetIngredients += ingredient.getIngredient() + " " + ingredient.getQuantity() + " " + ingredient.getMeasure() + "\n";
-                }
-                views.setTextViewText(R.id.widget_text, recipe.getName());
-                views.setTextViewText(R.id.widget_ingredient, widgetIngredients);
-            }else{
-                views.setViewVisibility(R.id.widget_text, View.GONE);
-                views.setTextViewText(R.id.widget_ingredient, "No Recipe Selected");
-            }
+            updateWidget(views, recipes);
+        }else{
+            List<Recipe> recipes = Recipe.listAll(Recipe.class);
+            updateWidget(views, recipes);
         }
 
         Intent intent = new Intent(context, MainActivity.class);
@@ -57,6 +48,22 @@ public class RecipeWidgetPovider extends AppWidgetProvider {
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
+    }
+
+    private static void updateWidget(RemoteViews views,  List<Recipe> recipes) {
+        String widgetIngredients = "";
+        if(recipes != null) {
+            Recipe recipe = recipes.get(0);
+            List<Ingredient> ingredients = Ingredient.find(Ingredient.class, "recipe_id=?", String.valueOf(recipe.getRecipeId()));
+            for (Ingredient ingredient : ingredients) {
+                widgetIngredients += ingredient.getIngredient() + "   (" + ingredient.getQuantity() + " " + ingredient.getMeasure() + ")\n";
+            }
+            views.setTextViewText(R.id.widget_text, recipe.getName());
+            views.setTextViewText(R.id.widget_ingredient, widgetIngredients);
+        }else{
+            views.setViewVisibility(R.id.widget_text, View.GONE);
+            views.setTextViewText(R.id.widget_ingredient, "No Recipe Selected");
+        }
     }
 
     @Override

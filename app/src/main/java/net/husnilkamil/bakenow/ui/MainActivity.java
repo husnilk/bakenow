@@ -14,6 +14,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Toast;
 
 import net.husnilkamil.bakenow.R;
 import net.husnilkamil.bakenow.adapter.RecipeAdapter;
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnR
             getRecipesFromServer();
             dataLoaded = true;
         }else{
+            Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show();
             Log.d(TAG, "not connected");
         }
 
@@ -115,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnR
             @Override
             public void onFailure(Call<List<net.husnilkamil.bakenow.retrofit.model.Recipe>> call, Throwable t) {
                 Log.d(TAG, "Failed : " + t.getMessage());
+                Toast.makeText(getApplicationContext(), "Couldn't retrieve the data", Toast.LENGTH_SHORT).show();
             }
 
         });
