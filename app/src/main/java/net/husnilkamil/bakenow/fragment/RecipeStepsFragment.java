@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import net.husnilkamil.bakenow.R;
+import net.husnilkamil.bakenow.StepRecyclerView;
 import net.husnilkamil.bakenow.adapter.IngredientAdapter;
 import net.husnilkamil.bakenow.adapter.StepAdapter;
 import net.husnilkamil.bakenow.entities.Ingredient;
@@ -30,7 +31,7 @@ public class RecipeStepsFragment extends Fragment {
     private static final String TAG = "RecipeStepsFragment";
 
     @BindView(R.id.rv_steps)
-    RecyclerView mStepRecyclerView;
+    StepRecyclerView mStepRecyclerView;
 
     @BindView(R.id.rv_ingredients)
     RecyclerView mIngredientRecyclerView;

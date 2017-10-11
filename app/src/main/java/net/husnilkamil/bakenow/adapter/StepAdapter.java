@@ -1,10 +1,14 @@
 package net.husnilkamil.bakenow.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import net.husnilkamil.bakenow.R;
 import net.husnilkamil.bakenow.entities.Step;
@@ -22,7 +26,6 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepHolder> {
 
     List<Step> data;
     OnStepClickListener stepClickListener;
-
 
     public StepAdapter(){
 
@@ -63,10 +66,15 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepHolder> {
         @BindView(R.id.tv_step_short_desc)
         TextView mStepShortDescText;
 
+        @BindView(R.id.img_step_thumbnail)
+        ImageView mThumbnailImage;
+
         View itemView;
+        Context context;
 
         public StepHolder(View itemView) {
             super(itemView);
+            context = itemView.getContext();
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
             this.itemView = itemView;
@@ -75,6 +83,12 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepHolder> {
         public void bind(Step step){
             mStepShortDescText.setText(step.getShortDescription());
             itemView.setTag(step.getId());
+            if(step.getThumbnailURL().equals("")){
+                mThumbnailImage.setImageResource(R.drawable.img_thumbnail);
+            }else {
+                String imageUrl = step.getThumbnailURL();
+                Picasso.with(context).load(imageUrl).into(mThumbnailImage);
+            }
         }
 
         @Override
