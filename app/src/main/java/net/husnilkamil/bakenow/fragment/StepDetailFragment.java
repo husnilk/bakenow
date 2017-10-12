@@ -76,14 +76,13 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
 
         Log.d(TAG, "Create View : " + String.valueOf(currentWindowPosition) + " , " + String.valueOf(currentVideoPosition));
 
-        prepareMedia();
-
         return view;
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        prepareMedia();
         if(Util.SDK_INT > 23) {
             initializePlayer();
         }
@@ -120,6 +119,7 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
     }
 
     public void setStepId(long stepId) {
+        Log.d(TAG, "Set Step ID: " + stepId);
         this.stepId = stepId;
     }
 
@@ -149,10 +149,10 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
         boolean resuming = currentWindowPosition != C.INDEX_UNSET;
         if(resuming) {
             Log.d(TAG, "Initialize Player resuming : " + String.valueOf(currentWindowPosition) + " , " + String.valueOf(currentVideoPosition));
-            mExoPlayer.seekTo(currentWindowPosition, currentVideoPosition);
+            mExoPlayer.seekTo(currentVideoPosition);
         }
         mExoPlayer.prepare(mediaSource, !resuming, false);
-        Log.d(TAG, "Initialize Player resuming : " + String.valueOf(mExoPlayer.getCurrentWindowIndex()) + " , " + String.valueOf(mExoPlayer.getContentPosition()));
+        Log.d(TAG, "Initialize Player : " + String.valueOf(mExoPlayer.getCurrentWindowIndex()) + " , " + String.valueOf(mExoPlayer.getContentPosition()));
 
     }
 
@@ -170,20 +170,20 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        releasePlayer();
+        updateResumePosition();
         Log.d(TAG, "OnSaveInstanceState : " + String.valueOf(currentWindowPosition) + " , " + String.valueOf(currentVideoPosition));
         outState.putLong(getString(R.string.current_video_position_key), currentVideoPosition);
         outState.putInt(getString(R.string.current_window_position_key), currentWindowPosition);
+        outState.putLong(getString(R.string.step_id_key), stepId);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if(savedInstanceState == null) {
-            clearResumePosition();
-        }else{
+        if(savedInstanceState != null) {
             currentVideoPosition = savedInstanceState.getLong(getString(R.string.current_video_position_key));
             currentWindowPosition = savedInstanceState.getInt(getString(R.string.current_window_position_key));
+            stepId = savedInstanceState.getLong(getString(R.string.step_id_key));
         }
         Log.d(TAG, "OnActivityCreated : " + String.valueOf(currentWindowPosition) + " , " + String.valueOf(currentVideoPosition));
     }
@@ -192,14 +192,14 @@ public class StepDetailFragment extends Fragment implements Player.EventListener
         if(mExoPlayer != null) {
             currentWindowPosition = mExoPlayer.getCurrentWindowIndex();
             currentVideoPosition = Math.max(0, mExoPlayer.getContentPosition());
-            Log.d(TAG, "Update Resume Position : " + String.valueOf(currentWindowPosition) + " , " + String.valueOf(currentVideoPosition));
+//            Log.d(TAG, "Update Resume Position : " + String.valueOf(currentWindowPosition) + " , " + String.valueOf(currentVideoPosition));
         }
     }
 
     public void clearResumePosition(){
         currentVideoPosition = C.INDEX_UNSET;
         currentWindowPosition = C.INDEX_UNSET;
-        Log.d(TAG, "Clear Resume Position : " + String.valueOf(currentWindowPosition) + " , " + String.valueOf(currentVideoPosition));
+//        Log.d(TAG, "Clear Resume Position : " + String.valueOf(currentWindowPosition) + " , " + String.valueOf(currentVideoPosition));
     }
 
     @Override

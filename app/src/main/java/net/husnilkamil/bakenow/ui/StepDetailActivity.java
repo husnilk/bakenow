@@ -1,31 +1,18 @@
 package net.husnilkamil.bakenow.ui;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
-import android.support.test.espresso.IdlingResource;
+import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
-
-import com.google.android.exoplayer2.ExoPlaybackException;
-import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.PlaybackParameters;
-import com.google.android.exoplayer2.Timeline;
-import com.google.android.exoplayer2.source.TrackGroupArray;
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 
 import net.husnilkamil.bakenow.R;
 import net.husnilkamil.bakenow.entities.Recipe;
 import net.husnilkamil.bakenow.entities.Step;
 import net.husnilkamil.bakenow.fragment.StepDetailFragment;
-import net.husnilkamil.bakenow.idlingres.SimpleIdlingResource;
 
 import java.util.List;
 
@@ -34,8 +21,9 @@ import butterknife.OnClick;
 
 public class StepDetailActivity extends AppCompatActivity{
 
-    long stepId;
-    int recipeId;
+    private static final String TAG = "StepDetailActivity";
+    long stepId = -1;
+    int recipeId = -1;
     List<Step> stepList;
     StepDetailFragment stepDetailFragment;
 
@@ -50,18 +38,22 @@ public class StepDetailActivity extends AppCompatActivity{
 
         Intent detailIntent = getIntent();
 
-        stepDetailFragment = new StepDetailFragment();
-
-        if(detailIntent != null) {
+        if(savedInstanceState == null){
+            stepDetailFragment = new StepDetailFragment();
             recipeId = detailIntent.getIntExtra(Recipe.KEY_RECIPE_ID, 1);
             stepId = detailIntent.getLongExtra(Step.KEY_STEP_ID, 0);
             stepDetailFragment.setStepId(stepId);
-            stepList = Step.find(Step.class, "recipe_id=?", String.valueOf(recipeId));
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.step_detail_fragment_container, stepDetailFragment)
+                    .commit();
+        }else {
+            recipeId = savedInstanceState.getInt(getString(R.string.recipe_id_key));
+            stepId = savedInstanceState.getLong(getString(R.string.step_id_key));
+            Log.d(TAG, "Restore State " + recipeId + " " + stepId);
         }
+        stepList = Step.find(Step.class, "recipe_id=?", String.valueOf(recipeId));
 
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.step_detail_fragment_container, stepDetailFragment)
-                .commit();
+
 
     }
     
@@ -73,7 +65,7 @@ public class StepDetailActivity extends AppCompatActivity{
         }else{
             idx--;
             Step step = stepList.get(idx);
-            stepDetailFragment.releasePlayer();
+            //stepDetailFragment.releasePlayer();
             stepId = step.getId();
             stepDetailFragment = new StepDetailFragment();
             stepDetailFragment.setStepId(stepId);
@@ -90,7 +82,7 @@ public class StepDetailActivity extends AppCompatActivity{
             Toast.makeText(this, "This is the last step", Toast.LENGTH_SHORT).show();
         }else{
             idx++;
-            stepDetailFragment.releasePlayer();
+            //stepDetailFragment.releasePlayer();
             Step step = stepList.get(idx);
             stepId = step.getId();
             stepDetailFragment = new StepDetailFragment();
@@ -125,15 +117,22 @@ public class StepDetailActivity extends AppCompatActivity{
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
         outState.putInt(getString(R.string.recipe_id_key), recipeId);
         outState.putLong(getString(R.string.step_id_key), stepId);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
         recipeId = savedInstanceState.getInt(getString(R.string.recipe_id_key));
         stepId = savedInstanceState.getLong(getString(R.string.step_id_key));
+        Log.d(TAG, "Restore Instance " + recipeId +  " " + stepId);
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        stepDetailFragment = null;
     }
 }

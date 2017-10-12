@@ -53,7 +53,7 @@
             android:textColor="@color/colorPrimaryText"
             android:textSize="18sp" />
 
-        <android.support.v7.widget.RecyclerView
+        <net.husnilkamil.bakenow.StepRecyclerView
             android:id="@+id/rv_steps"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
