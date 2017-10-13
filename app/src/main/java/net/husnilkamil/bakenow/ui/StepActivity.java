@@ -47,58 +47,51 @@ public class StepActivity extends AppCompatActivity implements StepAdapter.OnSte
         setContentView(R.layout.activity_step);
 
         Intent recipeDetailIntent = getIntent();
-        if (recipeDetailIntent != null) {
+        fragmentManager = getSupportFragmentManager();
+
+        if(savedInstanceState == null){
             recipeId = recipeDetailIntent.getIntExtra(Recipe.KEY_RECIPE_ID, 1);
-            //recipe = Recipe.findById(Recipe.class, recipeId);
-            Log.d(TAG, String.valueOf(recipeId));
-            List<Recipe> recipes = Recipe.find(Recipe.class, "recipe_id = ?", String.valueOf(recipeId));
-            if(recipes != null){
-                recipe = recipes.get(0);
-            }
-            ActionBar actionBar = getSupportActionBar();
-            actionBar.setTitle(recipe.getName());
-            actionBar.setDisplayHomeAsUpEnabled(true);
-
-            Log.d(TAG, "Recipe ID : " + String.valueOf(recipeId));
-
             List<Step> stepList = Step.find(Step.class, "recipe_id=?", String.valueOf(recipeId));
             if(stepList.size() > 0){
                 stepId = stepList.get(0).getId();
             }
+
+            isTwoPane = getResources().getBoolean(R.bool.isTablet);
+            if(isTwoPane){
+                recipeStepsFragment = new RecipeStepsFragment();
+                recipeStepsFragment.setAdapterClickListener(this);
+
+                stepDetailFragment = new StepDetailFragment();
+                stepDetailFragment.setStepId(stepId);
+                fragmentManager.beginTransaction()
+                        .replace(R.id.step_fragment_container, recipeStepsFragment)
+                        .replace(R.id.detail_fragment_container, stepDetailFragment)
+                        .commit();
+            }else {
+                recipeStepsFragment = new RecipeStepsFragment();
+                recipeStepsFragment.setAdapterClickListener(this);
+
+                fragmentManager.beginTransaction()
+                        .add(R.id.recipe_detail_fragment_container, recipeStepsFragment)
+                        .commit();
+            }
+
+            recipeStepsFragment.setRecipeId(recipeId);
+        }else{
+            isTwoPane = savedInstanceState.getBoolean(getString(R.string.two_pane_key));
+            recipeId = savedInstanceState.getInt(getString(R.string.recipe_id_key));
+            stepId = savedInstanceState.getLong(getString(R.string.step_id_key));
         }
 
-        fragmentManager = getSupportFragmentManager();
-
-        if(findViewById(R.id.linear_layout_sw600dp) != null){
-            isTwoPane = true;
-
-            recipeStepsFragment = new RecipeStepsFragment();
-            recipeStepsFragment.setAdapterClickListener(this);
-
-            stepDetailFragment = new StepDetailFragment();
-
-            fragmentManager.beginTransaction()
-                    .add(R.id.step_fragment_container, recipeStepsFragment)
-                    .add(R.id.detail_fragment_container, stepDetailFragment)
-                    .commit();
-
-            StepDetailFragment stepDetailFragment = new StepDetailFragment();
-            stepDetailFragment.setStepId(stepId);
-            fragmentManager.beginTransaction()
-                    .replace(R.id.detail_fragment_container, stepDetailFragment)
-                    .commit();
-
-        }else {
-            isTwoPane = false;
-            recipeStepsFragment = new RecipeStepsFragment();
-            recipeStepsFragment.setAdapterClickListener(this);
-
-            fragmentManager.beginTransaction()
-                    .add(R.id.recipe_detail_fragment_container, recipeStepsFragment)
-                    .commit();
+        Log.d(TAG, String.valueOf(recipeId));
+        List<Recipe> recipes = Recipe.find(Recipe.class, "recipe_id = ?", String.valueOf(recipeId));
+        if(recipes != null){
+            recipe = recipes.get(0);
         }
 
-        recipeStepsFragment.setRecipeId(recipeId);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(recipe.getName());
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
     }
 

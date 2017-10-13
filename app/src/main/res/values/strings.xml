@@ -18,4 +18,5 @@
     <string name="two_pane_key">net.husnilkamil.bakenow.TWO_PANE_KEY</string>
     <string name="current_video_position_key">net.husnilkamil.bakenow.CURRENT_VID_POS_KEY</string>
     <string name="current_window_position_key">net.husnilkamil.bakenow.CURRENT_WDW_POS_KEY</string>
+    <string name="current_playback_state_key">net.husnilkamil.bakenow.CURRENT_PLAYSTATE_KEY</string>
 </resources>

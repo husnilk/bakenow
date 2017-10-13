@@ -52,6 +52,10 @@ public class RecipeStepsFragment extends Fragment {
 
         ButterKnife.bind(this, view);
 
+        if(savedInstanceState != null){
+            recipeId = savedInstanceState.getLong(getString(R.string.recipe_id_key));
+        }
+
         mIngredientRecyclerView.setHasFixedSize(true);
         LinearLayoutManager ingredientLayoutManager = new LinearLayoutManager(getContext());
         mIngredientRecyclerView.setLayoutManager(ingredientLayoutManager);
@@ -94,5 +98,19 @@ public class RecipeStepsFragment extends Fragment {
 
     public void setRecipeId(long recipeId) {
         this.recipeId = recipeId;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if(savedInstanceState != null) {
+            recipeId = savedInstanceState.getLong(getString(R.string.recipe_id_key));
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(getString(R.string.recipe_id_key), recipeId);
     }
 }

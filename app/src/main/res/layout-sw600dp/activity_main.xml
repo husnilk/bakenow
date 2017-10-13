@@ -8,11 +8,11 @@
     android:id="@+id/layout_main_sw600dp"
     tools:context="net.husnilkamil.bakenow.ui.MainActivity">
 
-    <FrameLayout
-        android:id="@+id/recipe_fragment_container"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_recipes"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteY="8dp"
-        tools:layout_editor_absoluteX="8dp" />
+        android:layout_height="wrap_content">
+
+    </android.support.v7.widget.RecyclerView>
 
 </android.support.constraint.ConstraintLayout>
